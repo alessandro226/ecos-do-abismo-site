@@ -276,7 +276,7 @@ class App {
   }
 
   _checkBossCollisions(boss) {
-    const bossRadius = (boss.data.size ?? 64) * 0.4;
+    const bossRadius = boss.collisionRadius;
 
     for (const weapon of this.inventory.weaponSystems) {
       weapon.pool.forEachActive((proj) => {
@@ -534,6 +534,14 @@ class App {
     settingsCloseBtn?.addEventListener('click', () => {
       settingsPanel?.classList.add('hidden');
       if (this.game.state === GameState.PAUSED) this.game.resume();
+    });
+
+    document.getElementById('quit-to-menu-btn')?.addEventListener('click', () => {
+      settingsPanel?.classList.add('hidden');
+      this._resetRunState();
+      this.game.returnToMenu();
+      document.getElementById('start-modal')?.classList.remove('hidden');
+      this._updateBestRecordDisplay();
     });
     musicSlider?.addEventListener('input', (e) => {
       const v = parseFloat(e.target.value);

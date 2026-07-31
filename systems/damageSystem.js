@@ -45,7 +45,7 @@ export class DamageSystem {
         const nearby = this._grid.queryNearby(proj.x, proj.y);
         for (const enemy of nearby) {
           if (!enemy.alive || proj.hasHit(enemy)) continue;
-          const enemyRadius = (enemy.data.size ?? 24) * 0.35;
+          const enemyRadius = enemy.collisionRadius;
           if (circleCircle(proj.x, proj.y, PROJECTILE_RADIUS, enemy.x, enemy.y, enemyRadius)) {
             this._applyProjectileHit(proj, enemy);
           }
@@ -113,7 +113,7 @@ export class DamageSystem {
     const HEAVY_HITTERS = new Set(['tank', 'brute']);
     for (const enemy of enemies) {
       if (!enemy.alive) continue;
-      const enemyRadius = (enemy.data.size ?? 24) * 0.35;
+      const enemyRadius = enemy.collisionRadius;
       if (circleCircle(player.x, player.y, player.collisionRadius, enemy.x, enemy.y, enemyRadius)) {
         const dealt = player.takeDamage(enemy.contactDamage);
         if (dealt <= 0) continue; // invulnerável — sem dano, sem knockback, sem sfx

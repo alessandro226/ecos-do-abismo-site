@@ -91,6 +91,12 @@ export class Game {
     if (this.state === GameState.RUNNING) this.state = GameState.PAUSED;
   }
 
+  // Sair de uma partida em andamento de volta pro menu — diferente de
+  // endRun()/winRun(): não conta como derrota nem vitória, só abandona.
+  returnToMenu() {
+    this.state = GameState.MENU;
+  }
+
   resume() {
     if (this.state === GameState.PAUSED) this.state = GameState.RUNNING;
   }

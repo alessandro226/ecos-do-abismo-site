@@ -43,6 +43,10 @@ export class Boss {
     this.sprite.scale.set(scale);
     this.sprite.position.set(this.x, this.y);
     renderer.worldContainer.addChild(this.sprite);
+
+    const apparentWidth = this.sprite.texture.width * this.sprite.scale.x;
+    const apparentHeight = this.sprite.texture.height * this.sprite.scale.y;
+    this.collisionRadius = Math.max(10, Math.min(apparentWidth, apparentHeight) * 0.4);
   }
 
   update(dt, ctx) {

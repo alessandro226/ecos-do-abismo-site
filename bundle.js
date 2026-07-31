@@ -2517,6 +2517,12 @@ class Game {
     if (this.state === GameState.RUNNING) this.state = GameState.PAUSED;
   }
 
+  // Sair de uma partida em andamento de volta pro menu — diferente de
+  // endRun()/winRun(): não conta como derrota nem vitória, só abandona.
+  returnToMenu() {
+    this.state = GameState.MENU;
+  }
+
   resume() {
     if (this.state === GameState.PAUSED) this.state = GameState.RUNNING;
   }
@@ -3327,6 +3333,14 @@ class Enemy {
     renderer.worldContainer.addChild(this.sprite);
 
     this.secondaryMotion = new SecondaryMotion(this.sprite, { breathingSpeed: 2 + Math.random() });
+
+    // Raio de colisão real, calculado das dimensões RENDERIZADAS do
+    // sprite (não do valor bruto data.size) — sprites largos/não
+    // quadrados (como a arte real do Rastejante, 724×505) tinham um
+    // raio maior que a área visível de fato, causando dano "do nada".
+    const apparentWidth = this.sprite.texture.width * this.sprite.scale.x;
+    const apparentHeight = this.sprite.texture.height * this.sprite.scale.y;
+    this.collisionRadius = Math.max(6, Math.min(apparentWidth, apparentHeight) * 0.4);
   }
 
   // ---- Ponto de entrada único de update — despacha pro comportamento certo ----
@@ -3799,6 +3813,10 @@ class Boss {
     this.sprite.scale.set(scale);
     this.sprite.position.set(this.x, this.y);
     renderer.worldContainer.addChild(this.sprite);
+
+    const apparentWidth = this.sprite.texture.width * this.sprite.scale.x;
+    const apparentHeight = this.sprite.texture.height * this.sprite.scale.y;
+    this.collisionRadius = Math.max(10, Math.min(apparentWidth, apparentHeight) * 0.4);
   }
 
   update(dt, ctx) {
@@ -4203,7 +4221,7 @@ class DamageSystem {
         const nearby = this._grid.queryNearby(proj.x, proj.y);
         for (const enemy of nearby) {
           if (!enemy.alive || proj.hasHit(enemy)) continue;
-          const enemyRadius = (enemy.data.size ?? 24) * 0.35;
+          const enemyRadius = enemy.collisionRadius;
           if (circleCircle(proj.x, proj.y, PROJECTILE_RADIUS, enemy.x, enemy.y, enemyRadius)) {
             this._applyProjectileHit(proj, enemy);
           }
@@ -4271,7 +4289,7 @@ class DamageSystem {
     const HEAVY_HITTERS = new Set(['tank', 'brute']);
     for (const enemy of enemies) {
       if (!enemy.alive) continue;
-      const enemyRadius = (enemy.data.size ?? 24) * 0.35;
+      const enemyRadius = enemy.collisionRadius;
       if (circleCircle(player.x, player.y, player.collisionRadius, enemy.x, enemy.y, enemyRadius)) {
         const dealt = player.takeDamage(enemy.contactDamage);
         if (dealt <= 0) continue; // invulnerável — sem dano, sem knockback, sem sfx
@@ -5101,7 +5119,7 @@ class App {
   }
 
   _checkBossCollisions(boss) {
-    const bossRadius = (boss.data.size ?? 64) * 0.4;
+    const bossRadius = boss.collisionRadius;
 
     for (const weapon of this.inventory.weaponSystems) {
       weapon.pool.forEachActive((proj) => {
@@ -5359,6 +5377,14 @@ class App {
     settingsCloseBtn?.addEventListener('click', () => {
       settingsPanel?.classList.add('hidden');
       if (this.game.state === GameState.PAUSED) this.game.resume();
+    });
+
+    document.getElementById('quit-to-menu-btn')?.addEventListener('click', () => {
+      settingsPanel?.classList.add('hidden');
+      this._resetRunState();
+      this.game.returnToMenu();
+      document.getElementById('start-modal')?.classList.remove('hidden');
+      this._updateBestRecordDisplay();
     });
     musicSlider?.addEventListener('input', (e) => {
       const v = parseFloat(e.target.value);

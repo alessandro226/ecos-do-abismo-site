@@ -57,6 +57,14 @@ export class Enemy {
     renderer.worldContainer.addChild(this.sprite);
 
     this.secondaryMotion = new SecondaryMotion(this.sprite, { breathingSpeed: 2 + Math.random() });
+
+    // Raio de colisão real, calculado das dimensões RENDERIZADAS do
+    // sprite (não do valor bruto data.size) — sprites largos/não
+    // quadrados (como a arte real do Rastejante, 724×505) tinham um
+    // raio maior que a área visível de fato, causando dano "do nada".
+    const apparentWidth = this.sprite.texture.width * this.sprite.scale.x;
+    const apparentHeight = this.sprite.texture.height * this.sprite.scale.y;
+    this.collisionRadius = Math.max(6, Math.min(apparentWidth, apparentHeight) * 0.4);
   }
 
   // ---- Ponto de entrada único de update — despacha pro comportamento certo ----
