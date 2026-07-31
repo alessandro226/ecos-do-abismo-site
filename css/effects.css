@@ -1,0 +1,13 @@
+/* ==== effects.css — overlays de tela cheia (vinheta de vida baixa, flash de dano) ==== */
+
+#low-health-vignette {
+  position: absolute; inset: 0; pointer-events: none; z-index: 20;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(230,36,60,0.35) 100%);
+  opacity: 0; transition: opacity 0.3s;
+}
+#low-health-vignette.active { opacity: 1; animation: pulse-vignette 1.2s ease-in-out infinite; }
+
+#screen-flash {
+  position: absolute; inset: 0; pointer-events: none; z-index: 25;
+  background: #ffffff; opacity: 0;
+}

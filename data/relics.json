@@ -1,0 +1,91 @@
+[
+  {
+    "id": "crit",
+    "name": "Golpe Fatal",
+    "icon": "💥",
+    "rarity": "Epico",
+    "kind": "stat",
+    "desc": "+10% chance de crítico (x2 dano)."
+  },
+  {
+    "id": "fome_abissal",
+    "name": "Fome Abissal",
+    "icon": "🩸",
+    "rarity": "Epico",
+    "kind": "stat",
+    "maxStacks": 4,
+    "desc": "Cura 2,5% do dano causado como vida."
+  },
+  {
+    "id": "furia_critica",
+    "name": "Fúria Crítica",
+    "icon": "💥",
+    "rarity": "Epico",
+    "kind": "stat",
+    "maxStacks": 3,
+    "desc": "Críticos causam ainda mais dano (multiplicador de crítico +20%)."
+  },
+  {
+    "id": "onda_de_choque",
+    "name": "Onda de Choque",
+    "icon": "🌊",
+    "rarity": "Epico",
+    "kind": "stat",
+    "maxStacks": 3,
+    "desc": "+18% dano de armas de área (aura)."
+  },
+  {
+    "id": "guardioes_orbitais",
+    "name": "Guardiões Orbitais",
+    "icon": "⚙️",
+    "rarity": "Epico",
+    "kind": "stat",
+    "maxStacks": 2,
+    "desc": "Armas orbitais ganham +15% de dano."
+  },
+  {
+    "id": "ressonancia_abismo",
+    "name": "Ressonância do Abismo",
+    "icon": "🔮",
+    "rarity": "Lendario",
+    "kind": "stat",
+    "maxStacks": 1,
+    "desc": "+8% de dano com todas as armas."
+  },
+  {
+    "id": "cristal_amplificador",
+    "name": "Cristal Amplificador",
+    "icon": "💎",
+    "rarity": "Epico",
+    "kind": "stat",
+    "maxStacks": 3,
+    "desc": "+12% raio de coleta de essência e ouro."
+  },
+  {
+    "id": "maldicao_vazio",
+    "name": "Maldição do Vazio",
+    "icon": "🌑",
+    "rarity": "Epico",
+    "kind": "tradeoff",
+    "maxStacks": 2,
+    "desc": "+22% dano, porém -40% regeneração."
+  },
+  {
+    "id": "coracao_abismo",
+    "name": "Coração do Abismo",
+    "icon": "❤️‍🔥",
+    "rarity": "Lendario",
+    "kind": "stat",
+    "maxStacks": 1,
+    "desc": "+15% HP máximo e +8% dano, de uma vez só."
+  },
+  {
+    "id": "ecos_eternos",
+    "name": "Ecos Eternos",
+    "icon": "♾️",
+    "rarity": "Mitico",
+    "kind": "stat",
+    "maxStacks": 1,
+    "desc": "+6% dano, velocidade e velocidade de ataque, tudo ao mesmo tempo."
+  }
+]

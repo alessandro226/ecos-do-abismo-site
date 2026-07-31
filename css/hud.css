@@ -1,0 +1,35 @@
+/* ==== hud.css — HUD durante a partida ==== */
+
+.hud-topbar {
+  position: absolute; top: 0; left: 0; width: 100%; padding: 10px 14px;
+  display: flex; align-items: center; gap: 12px; z-index: 10;
+}
+.hud-level {
+  color: #c29b38; font-size: 13px; font-weight: 700; min-width: 44px; text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.8);
+}
+.hud-bar-wrap {
+  flex: 1; height: 14px; background: rgba(255,255,255,0.08); border-radius: 8px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.hud-bar-wrap-xp { flex: 0.6; height: 8px; }
+.hud-bar { height: 100%; width: 0%; transition: width 0.15s; }
+.hud-bar-health { background: linear-gradient(90deg,#8a2b3d,#e6243c); }
+.hud-bar-xp { background: linear-gradient(90deg,#1a1921,#00d2ff); }
+.hud-bar-boss { background: linear-gradient(90deg,#8a2b3d,#e6243c); }
+
+.hud-timer { color: #ffffff; font-size: 14px; font-weight: 600; min-width: 52px; text-align: center; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+.hud-gold { color: #ffd054; font-size: 12px; font-weight: 700; min-width: 60px; text-align: right; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+
+.hud-notice {
+  position: absolute; top: 34px; left: 0; width: 100%; text-align: center; pointer-events: none;
+  color: #ffffff; font-size: 13px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,.9);
+  opacity: 0; transition: opacity 0.3s;
+}
+.hud-notice.visible { opacity: 1; }
+
+.hud-boss-bar-wrap {
+  position: absolute; top: 56px; left: 50%; transform: translateX(-50%); width: min(80%,420px);
+  display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none;
+}
+.hud-boss-name { color: #e6243c; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 1px 3px rgba(0,0,0,.9); font-weight: 800; }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Ecos do Abismo</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/hud.css">
+<link rel="stylesheet" href="css/menu.css">
+<link rel="stylesheet" href="css/effects.css">
+<link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+<div id="game-root"></div>
+<div id="hud-root"></div>
+<div id="joystick-zone">
+  <div id="joystick-base"><div id="joystick-stick"></div></div>
+</div>
+
+<div id="start-modal" class="modal-screen">
+  <h1 id="title-crystal">✦ ECOS DO ABISMO ✦</h1>
+  <p>Sobreviva ao Abismo. Uma décadas de cristal corrompido aguarda.</p>
+  <div id="best-record-line"></div>
+  <button id="start-btn" class="btn-primary">Começar</button>
+  <button id="settings-btn" class="btn-secondary">Configurações</button>
+  <button id="encyclopedia-btn" class="btn-secondary">Enciclopédia</button>
+</div>
+
+<div id="encyclopedia-modal" class="modal-screen hidden">
+  <h2>Enciclopédia</h2>
+  <div id="encyclopedia-tabs">
+    <button class="tab-btn active" data-tab="enemies">Inimigos</button>
+    <button class="tab-btn" data-tab="weapons">Armas</button>
+    <button class="tab-btn" data-tab="bosses">Chefes</button>
+  </div>
+  <div id="encyclopedia-list"></div>
+  <button id="encyclopedia-close-btn" class="btn-secondary">Fechar</button>
+</div>
+
+<div id="settings-panel" class="modal-screen hidden">
+  <h2>Configurações</h2>
+  <label>Música <input type="range" id="music-volume" min="0" max="1" step="0.05"></label>
+  <label>Efeitos <input type="range" id="sfx-volume" min="0" max="1" step="0.05"></label>
+  <label class="checkbox-label"><input type="checkbox" id="high-contrast-toggle"> Alto Contraste</label>
+  <button id="settings-close-btn" class="btn-secondary">Fechar</button>
+</div>
+
+<div id="game-over-modal" class="modal-screen hidden">
+  <h1>Você caiu no Abismo</h1>
+  <p id="game-over-summary"></p>
+  <button id="restart-btn" class="btn-primary">Tentar Novamente</button>
+</div>
+
+<div id="victory-modal" class="modal-screen hidden">
+  <h1 id="victory-title">✦ O Abismo foi Silenciado ✦</h1>
+  <p id="victory-summary"></p>
+  <button id="victory-restart-btn" class="btn-primary">Jogar Novamente</button>
+</div>
+
+<div id="level-up-modal" class="modal-screen hidden">
+  <h2>--- LEVEL UP! ---</h2>
+  <div id="level-up-cards"></div>
+</div>
+
+<div id="fatal-error-banner" class="hidden"></div>
+
+<!-- PixiJS via CDN + bundle.js (script comum, SEM type="module") — ES6
+     modules com import/export são bloqueados por CORS em file:// no
+     Chrome/Edge, então empacotamos tudo com build.js antes de servir. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.6.6/pixi.min.js"></script>
+<script src="bundle.js"></script>
+</body>
+</html>

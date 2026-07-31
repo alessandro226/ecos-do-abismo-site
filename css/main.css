@@ -1,0 +1,50 @@
+/* ==== main.css — reset e layout base ==== */
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+html, body { width: 100%; height: 100%; background: #0f0d15; overflow: hidden; font-family: 'Segoe UI', system-ui, sans-serif; touch-action: none; }
+
+#game-root { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+#game-root canvas { image-rendering: pixelated; }
+
+#hud-root { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+#hud-root button, #hud-root input { pointer-events: all; }
+
+#fatal-error-banner {
+  position: absolute; inset: 0; z-index: 300; display: flex; align-items: center; justify-content: center;
+  background: rgba(4,3,6,0.96); color: #ff6a6a; font-size: 14px; font-weight: 700; text-align: center; padding: 30px;
+}
+
+.hidden { display: none !important; }
+
+/* ==== Joystick virtual — zona ocupa o quadrante inferior esquerdo
+   (ergonomia de polegar, Volume VI seção de toque), sem interferir
+   nos botões da direita nem no HUD superior. ==== */
+#joystick-zone {
+  position: absolute; left: 0; bottom: 0; width: 45%; height: 55%;
+  z-index: 15; pointer-events: all; touch-action: none;
+}
+#joystick-base {
+  position: absolute; width: 90px; height: 90px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.18);
+  display: none; pointer-events: none;
+}
+#joystick-stick {
+  position: absolute; width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(0,210,255,0.35); border: 2px solid rgba(0,210,255,0.6);
+  left: 25px; top: 25px;
+}
+
+.checkbox-label { flex-direction: row !important; align-items: center; gap: 8px; }
+
+/* ==== Alto Contraste — aplicado via body.high-contrast (Fase 6/Volume XIV) ====
+   Regra geral de acessibilidade: nunca depender só de cor sutil pra
+   passar informação crítica — aqui isso significa bordas bem mais
+   grossas e texto sempre 100% opaco, nunca semitransparente. */
+body.high-contrast .hud-bar-wrap { border-width: 2px; border-color: #ffffff; }
+body.high-contrast .hud-bar-health { background: #ff0000; }
+body.high-contrast .hud-bar-xp { background: #00eaff; }
+body.high-contrast .hud-timer, body.high-contrast .hud-level, body.high-contrast .hud-gold {
+  color: #ffffff; text-shadow: 0 0 4px #000, 0 0 4px #000;
+}
+body.high-contrast .modal-screen { background: rgba(0,0,0,0.98); }
+body.high-contrast .btn-primary, body.high-contrast .btn-secondary { border-width: 2px; }
