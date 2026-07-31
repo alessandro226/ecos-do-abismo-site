@@ -55,6 +55,7 @@ class App {
   constructor() {
     this.renderer = new Renderer();
     this.camera = new Camera();
+    this.camera.setZoom(0.76, true); // calculado a partir da proporção medida na foto de referência
     this.input = new InputManager();
     this.audio = new AudioManager();
     this.saveManager = new SaveManager();
@@ -98,7 +99,9 @@ class App {
       input: this.input,
       stats: { moveSpeed: 180, maxHealth: 100 },
     });
-    this.playerLight = this.renderer.createRadialLight(window.PIXI, { radius: 140, color: 0x00d2ff, alpha: 0.45 });
+    // Luz radial removida: o mapa agora é claro (cinza), a luz não faz
+    // mais sentido — antes existia justamente pra compensar o fundo
+    // escuro que não existe mais.
 
     this.spawnSystem = new SpawnSystem({
       renderer: this.renderer,
@@ -617,7 +620,6 @@ class App {
         this.particles.burst({ x, y, ...opts });
         this.damageNumbers.spawn(x, y, dmg, false);
       });
-      this.playerLight.position.set(this.player.x, this.player.y);
       this.camera.followTarget(this.player.x, this.player.y, scaledDtSec);
       this.camera.update(scaledDtSec);
       this.renderer.applyCamera(this.camera);

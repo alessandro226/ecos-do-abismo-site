@@ -32,7 +32,7 @@ export class Renderer {
     this.app = new PIXI.Application();
     await this.app.init({
       width, height,
-      backgroundColor: 0x0f0d15, // Volume III — "Escuro" da paleta oficial
+      backgroundColor: 0x4a4a52, // cinza claro, como a referência — nada de escuro
       antialias: false, // pixel art — nearest neighbor, sem suavização
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
@@ -153,7 +153,7 @@ export class Renderer {
     const cell = 64;
     const half = size / 2;
 
-    ground.rect(-half, -half, size, size).fill({ color: 0x161320 }); // um tom mais claro que o fundo puro
+    ground.rect(-half, -half, size, size).fill({ color: 0x525259 }); // cinza claro, igual ao fundo — mapa não é mais escuro
 
     for (let x = -half; x <= half; x += cell) {
       ground.moveTo(x, -half).lineTo(x, half);

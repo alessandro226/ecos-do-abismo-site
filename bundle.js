@@ -2632,7 +2632,7 @@ class Renderer {
     this.app = new PIXI.Application();
     await this.app.init({
       width, height,
-      backgroundColor: 0x0f0d15, // Volume III — "Escuro" da paleta oficial
+      backgroundColor: 0x4a4a52, // cinza claro, como a referência — nada de escuro
       antialias: false, // pixel art — nearest neighbor, sem suavização
       resolution: window.devicePixelRatio || 1,
       autoDensity: true,
@@ -2753,7 +2753,7 @@ class Renderer {
     const cell = 64;
     const half = size / 2;
 
-    ground.rect(-half, -half, size, size).fill({ color: 0x161320 }); // um tom mais claro que o fundo puro
+    ground.rect(-half, -half, size, size).fill({ color: 0x525259 }); // cinza claro, igual ao fundo — mapa não é mais escuro
 
     for (let x = -half; x <= half; x += cell) {
       ground.moveTo(x, -half).lineTo(x, half);
@@ -3100,7 +3100,7 @@ class Player {
     // ~76-101px), que não foi redesenhada pro canvas 48x48/bounding
     // box 24x32 que o Volume III especifica. Redesenhar a arte é
     // trabalho de pixel art, fora do que dá pra fazer em código.
-    this.sprite.scale.set(0.42);
+    this.sprite.scale.set(0.17);
 
     const frames = renderer.atlasTextures.player;
     const animations = this._buildAnimations(frames);
@@ -4874,6 +4874,7 @@ class App {
   constructor() {
     this.renderer = new Renderer();
     this.camera = new Camera();
+    this.camera.setZoom(0.76, true); // calculado a partir da proporção medida na foto de referência
     this.input = new InputManager();
     this.audio = new AudioManager();
     this.saveManager = new SaveManager();
@@ -4917,7 +4918,9 @@ class App {
       input: this.input,
       stats: { moveSpeed: 180, maxHealth: 100 },
     });
-    this.playerLight = this.renderer.createRadialLight(window.PIXI, { radius: 140, color: 0x00d2ff, alpha: 0.45 });
+    // Luz radial removida: o mapa agora é claro (cinza), a luz não faz
+    // mais sentido — antes existia justamente pra compensar o fundo
+    // escuro que não existe mais.
 
     this.spawnSystem = new SpawnSystem({
       renderer: this.renderer,
@@ -5436,7 +5439,6 @@ class App {
         this.particles.burst({ x, y, ...opts });
         this.damageNumbers.spawn(x, y, dmg, false);
       });
-      this.playerLight.position.set(this.player.x, this.player.y);
       this.camera.followTarget(this.player.x, this.player.y, scaledDtSec);
       this.camera.update(scaledDtSec);
       this.renderer.applyCamera(this.camera);

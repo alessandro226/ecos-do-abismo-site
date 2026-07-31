@@ -52,7 +52,7 @@ export class Player {
     // ~76-101px), que não foi redesenhada pro canvas 48x48/bounding
     // box 24x32 que o Volume III especifica. Redesenhar a arte é
     // trabalho de pixel art, fora do que dá pra fazer em código.
-    this.sprite.scale.set(0.42);
+    this.sprite.scale.set(0.17);
 
     const frames = renderer.atlasTextures.player;
     const animations = this._buildAnimations(frames);
