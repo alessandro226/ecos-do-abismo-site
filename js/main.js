@@ -479,6 +479,24 @@ class App {
       });
     }
 
+    const joyZoneEl = document.getElementById('joystick-zone');
+    const applyJoystickPosition = (pos) => {
+      joyZoneEl?.classList.toggle('position-center', pos === 'center');
+    };
+    const joyPosRadios = document.querySelectorAll('input[name="joystick-position"]');
+    const currentJoyPos = this.settings.get('joystickPosition');
+    joyPosRadios.forEach((radio) => {
+      radio.checked = radio.value === currentJoyPos;
+      radio.addEventListener('change', (e) => {
+        if (!e.target.checked) return;
+        this.settings.set('joystickPosition', e.target.value);
+        applyJoystickPosition(e.target.value);
+        this.saveManager.data.settings = this.settings.toJSON();
+        this.saveManager.scheduleSave();
+      });
+    });
+    applyJoystickPosition(currentJoyPos);
+
     settingsBtn?.addEventListener('click', () => {
       settingsPanel?.classList.remove('hidden');
       if (this.game.isRunning()) this.game.pause();

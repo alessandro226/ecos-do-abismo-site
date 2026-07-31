@@ -8,6 +8,7 @@ const DEFAULTS = {
   musicVolume: 0.7,
   sfxVolume: 0.8,
   joystickMode: 'fixed', // 'fixed' | 'floating'
+  joystickPosition: 'left', // 'left' | 'center'
   highContrast: false,
   particleIntensity: 1, // 0-1, reduz partículas em dispositivos fracos
   graphicsQuality: 'alto', // 'baixo' | 'medio' | 'alto' | 'ultra'

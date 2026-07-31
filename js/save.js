@@ -12,7 +12,7 @@ function defaultData() {
     achievements: {}, discoveredWeapons: {}, discoveredEnemies: {},
     discoveredBosses: {}, researchLevels: {},
     settings: {
-      musicVolume: 0.7, sfxVolume: 0.8, joystickMode: 'fixed',
+      musicVolume: 0.7, sfxVolume: 0.8, joystickMode: 'fixed', joystickPosition: 'left',
       highContrast: false, particleIntensity: 1,
     },
   };

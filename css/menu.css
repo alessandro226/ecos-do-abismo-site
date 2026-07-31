@@ -28,6 +28,8 @@
 
 #settings-panel label { display: flex; flex-direction: column; gap: 6px; color: #a9a9a9; font-size: 12px; }
 #settings-panel input[type="range"] { width: 200px; accent-color: #c29b38; }
+.radio-group { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+.radio-group-label { color: #a9a9a9; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
 
 #game-over-modal h1 { color: #e6243c; font-size: clamp(24px, 5vw, 40px); }
 #victory-title { color: #ffd054; font-size: clamp(24px, 5vw, 40px); text-shadow: 0 0 24px rgba(255,208,84,0.5); }

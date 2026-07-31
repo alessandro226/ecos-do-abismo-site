@@ -2083,7 +2083,7 @@ function defaultData() {
     achievements: {}, discoveredWeapons: {}, discoveredEnemies: {},
     discoveredBosses: {}, researchLevels: {},
     settings: {
-      musicVolume: 0.7, sfxVolume: 0.8, joystickMode: 'fixed',
+      musicVolume: 0.7, sfxVolume: 0.8, joystickMode: 'fixed', joystickPosition: 'left',
       highContrast: false, particleIntensity: 1,
     },
   };
@@ -2152,6 +2152,7 @@ const DEFAULTS = {
   musicVolume: 0.7,
   sfxVolume: 0.8,
   joystickMode: 'fixed', // 'fixed' | 'floating'
+  joystickPosition: 'left', // 'left' | 'center'
   highContrast: false,
   particleIntensity: 1, // 0-1, reduz partículas em dispositivos fracos
   graphicsQuality: 'alto', // 'baixo' | 'medio' | 'alto' | 'ultra'
@@ -5296,6 +5297,24 @@ class App {
         this.saveManager.scheduleSave();
       });
     }
+
+    const joyZoneEl = document.getElementById('joystick-zone');
+    const applyJoystickPosition = (pos) => {
+      joyZoneEl?.classList.toggle('position-center', pos === 'center');
+    };
+    const joyPosRadios = document.querySelectorAll('input[name="joystick-position"]');
+    const currentJoyPos = this.settings.get('joystickPosition');
+    joyPosRadios.forEach((radio) => {
+      radio.checked = radio.value === currentJoyPos;
+      radio.addEventListener('change', (e) => {
+        if (!e.target.checked) return;
+        this.settings.set('joystickPosition', e.target.value);
+        applyJoystickPosition(e.target.value);
+        this.saveManager.data.settings = this.settings.toJSON();
+        this.saveManager.scheduleSave();
+      });
+    });
+    applyJoystickPosition(currentJoyPos);
 
     settingsBtn?.addEventListener('click', () => {
       settingsPanel?.classList.remove('hidden');

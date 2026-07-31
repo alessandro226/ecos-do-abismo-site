@@ -23,6 +23,12 @@ html, body { width: 100%; height: 100%; background: #0f0d15; overflow: hidden; f
   position: absolute; left: 0; bottom: 0; width: 45%; height: 55%;
   z-index: 15; pointer-events: all; touch-action: none;
 }
+/* Posição "centro inferior" — zona passa a ocupar o meio da tela em vez
+   do canto esquerdo, útil pra quem segura o celular com as duas mãos
+   e prefere o polegar mais perto do centro. */
+#joystick-zone.position-center {
+  left: 27.5%; width: 45%;
+}
 #joystick-base {
   position: absolute; width: 90px; height: 90px; border-radius: 50%;
   background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.18);
