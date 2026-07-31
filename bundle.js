@@ -3089,6 +3089,13 @@ class Player {
 
     this._buildSprite(renderer);
     this.statusReceiver = new StatusReceiver(this);
+    // Raio de colisão em unidades de mundo, proporcional à altura real
+    // do sprite (texture height × escala) — centralizado aqui pra nunca
+    // mais ficar um número fixo espalhado em vários arquivos, que
+    // desincroniza toda vez que a escala do jogador muda (foi
+    // exatamente isso que causou "dano do nada": o raio antigo, 12,
+    // ficou maior que o sprite inteiro depois de eu reduzir a escala).
+    this.collisionRadius = Math.max(5, (this.sprite.texture.height * this.sprite.scale.y) * 0.28);
   }
 
   _buildSprite(renderer) {
@@ -4159,7 +4166,6 @@ class WeaponSystem {
 
 
 
-const PLAYER_RADIUS = 12;
 const PROJECTILE_RADIUS = 4;
 const GRID_CELL_SIZE = 96; // um pouco maior que o maior raio de inimigo comum
 
@@ -4266,7 +4272,7 @@ class DamageSystem {
     for (const enemy of enemies) {
       if (!enemy.alive) continue;
       const enemyRadius = (enemy.data.size ?? 24) * 0.35;
-      if (circleCircle(player.x, player.y, PLAYER_RADIUS, enemy.x, enemy.y, enemyRadius)) {
+      if (circleCircle(player.x, player.y, player.collisionRadius, enemy.x, enemy.y, enemyRadius)) {
         const dealt = player.takeDamage(enemy.contactDamage);
         if (dealt <= 0) continue; // invulnerável — sem dano, sem knockback, sem sfx
         this.game.registerDamageTaken(dealt);
@@ -5109,7 +5115,7 @@ class App {
       });
     }
 
-    if (circleCircle(this.player.x, this.player.y, 12, boss.x, boss.y, bossRadius)) {
+    if (circleCircle(this.player.x, this.player.y, this.player.collisionRadius, boss.x, boss.y, bossRadius)) {
       const dealt = this.player.takeDamage(boss.contactDamage);
       if (dealt > 0) {
         this.game.registerDamageTaken(dealt);

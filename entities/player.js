@@ -41,6 +41,13 @@ export class Player {
 
     this._buildSprite(renderer);
     this.statusReceiver = new StatusReceiver(this);
+    // Raio de colisão em unidades de mundo, proporcional à altura real
+    // do sprite (texture height × escala) — centralizado aqui pra nunca
+    // mais ficar um número fixo espalhado em vários arquivos, que
+    // desincroniza toda vez que a escala do jogador muda (foi
+    // exatamente isso que causou "dano do nada": o raio antigo, 12,
+    // ficou maior que o sprite inteiro depois de eu reduzir a escala).
+    this.collisionRadius = Math.max(5, (this.sprite.texture.height * this.sprite.scale.y) * 0.28);
   }
 
   _buildSprite(renderer) {

@@ -8,7 +8,6 @@
 import { circleCircle, SpatialGrid } from '../js/collision.js';
 import { distance } from '../js/utils.js';
 
-const PLAYER_RADIUS = 12;
 const PROJECTILE_RADIUS = 4;
 const GRID_CELL_SIZE = 96; // um pouco maior que o maior raio de inimigo comum
 
@@ -115,7 +114,7 @@ export class DamageSystem {
     for (const enemy of enemies) {
       if (!enemy.alive) continue;
       const enemyRadius = (enemy.data.size ?? 24) * 0.35;
-      if (circleCircle(player.x, player.y, PLAYER_RADIUS, enemy.x, enemy.y, enemyRadius)) {
+      if (circleCircle(player.x, player.y, player.collisionRadius, enemy.x, enemy.y, enemyRadius)) {
         const dealt = player.takeDamage(enemy.contactDamage);
         if (dealt <= 0) continue; // invulnerável — sem dano, sem knockback, sem sfx
         this.game.registerDamageTaken(dealt);

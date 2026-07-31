@@ -290,7 +290,7 @@ class App {
       });
     }
 
-    if (circleCircle(this.player.x, this.player.y, 12, boss.x, boss.y, bossRadius)) {
+    if (circleCircle(this.player.x, this.player.y, this.player.collisionRadius, boss.x, boss.y, bossRadius)) {
       const dealt = this.player.takeDamage(boss.contactDamage);
       if (dealt > 0) {
         this.game.registerDamageTaken(dealt);
