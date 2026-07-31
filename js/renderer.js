@@ -51,12 +51,29 @@ export class Renderer {
   }
 
   _setupResize(baseWidth, baseHeight) {
+    // Antes: CSS letterbox de um canvas FIXO em 640x360 — em telas
+    // retrato (celular), isso deixava a maior parte da tela preta e
+    // vazia, com o jogo espremido numa faixa horizontal minúscula no
+    // meio (exatamente o que o jogador relatou). Correção: redimensiona
+    // o renderer de verdade pro tamanho real da viewport, mantendo a
+    // MENOR dimensão (altura, no caso de celular) igual à base — ou
+    // seja, o jogador vê MAIS mundo dos lados, não menos jogo espremido.
     const resize = () => {
       const parent = this.app.canvas.parentElement;
       if (!parent) return;
-      const scale = Math.min(parent.clientWidth / baseWidth, parent.clientHeight / baseHeight);
-      this.app.canvas.style.width = `${baseWidth * scale}px`;
-      this.app.canvas.style.height = `${baseHeight * scale}px`;
+      const w = parent.clientWidth || window.innerWidth;
+      const h = parent.clientHeight || window.innerHeight;
+
+      // Mantém a menor base (altura de referência 360) fixa, deixa a
+      // largura variar livremente conforme o formato real da tela —
+      // assim paisagem e retrato mostram uma "fatia" proporcional de
+      // mundo, sem barras pretas.
+      const targetHeight = baseHeight;
+      const targetWidth = Math.round((w / h) * targetHeight);
+
+      this.app.renderer.resize(targetWidth, targetHeight);
+      this.app.canvas.style.width = '100%';
+      this.app.canvas.style.height = '100%';
     };
     window.addEventListener('resize', resize);
     resize();
