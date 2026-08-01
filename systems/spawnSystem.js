@@ -52,6 +52,7 @@ export class SpawnSystem {
     enemy.contactDamage = data.dmgMult * 8 * mult;
     enemy.alive = true;
     enemy.shieldHp = 0;
+    enemy._hitAnimUntilMs = 0;
     enemy.knockbackVX = 0; enemy.knockbackVY = 0;
     enemy.stunnedUntilMs = 0;
     enemy.sprite.alpha = 1;

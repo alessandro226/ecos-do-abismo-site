@@ -116,6 +116,13 @@ export class Renderer {
     return texture;
   }
 
+  /** Versão em lote — registra vários frames nomeados de uma vez (ex:
+   * as 36 poses de animação real de um inimigo), em paralelo. */
+  async addFramesToAtlas(atlasName, frameMap) {
+    const entries = Object.entries(frameMap);
+    await Promise.all(entries.map(([name, b64]) => this.addFrameToAtlas(atlasName, name, b64)));
+  }
+
   _loadImage(dataUri) {
     return new Promise((resolve, reject) => {
       const img = new Image();

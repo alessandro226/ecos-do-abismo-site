@@ -7,7 +7,7 @@
 // ====================================================================
 
 import { distance, angleBetween, clamp } from '../js/utils.js';
-import { SecondaryMotion } from '../js/animation.js';
+import { SecondaryMotion, FrameAnimator } from '../js/animation.js';
 import { StatusReceiver } from '../systems/statusEffects.js';
 
 export class Enemy {
@@ -47,24 +47,64 @@ export class Enemy {
 
   _buildSprite(renderer) {
     const PIXI = window.PIXI;
+    const hasRealAnimation = !!renderer.getTexture('enemy_anim', `${this.data.id}_idle_0`);
+
+    if (hasRealAnimation) {
+      this._buildAnimatedSprite(renderer);
+    } else {
+      this._buildStaticSprite(renderer);
+    }
+
+    this.sprite.position.set(this.x, this.y);
+    renderer.worldContainer.addChild(this.sprite);
+
+    const apparentWidth = this.sprite.texture.width * this.sprite.scale.x;
+    const apparentHeight = this.sprite.texture.height * this.sprite.scale.y;
+    this.collisionRadius = Math.max(6, Math.min(apparentWidth, apparentHeight) * 0.4);
+  }
+
+  // Caminho SEM arte definitiva (16 dos 17 tipos hoje): sprite único +
+  // movimento procedural (respiração/squash) pra dar vida sem precisar
+  // de frames desenhados.
+  _buildStaticSprite(renderer) {
+    const PIXI = window.PIXI;
     const frame = renderer.getTexture('enemy', this.data.id);
     this.sprite = new PIXI.Sprite(frame || PIXI.Texture.WHITE);
     this.sprite.anchor.set(0.5, 0.65);
     this.sprite.tint = this.data.color ?? 0xffffff;
     const scale = Math.min(1, (this.data.size ?? 24) / Math.max(this.sprite.texture.width, this.sprite.texture.height || 1));
-    this.sprite.scale.set(scale); // "scale" já normaliza a textura real pro data.size — sem multiplicador extra
-    this.sprite.position.set(this.x, this.y);
-    renderer.worldContainer.addChild(this.sprite);
-
+    this.sprite.scale.set(scale); // já normaliza a textura real pro data.size — sem multiplicador extra
     this.secondaryMotion = new SecondaryMotion(this.sprite, { breathingSpeed: 2 + Math.random() });
+    this.hasRealAnimation = false;
+  }
 
-    // Raio de colisão real, calculado das dimensões RENDERIZADAS do
-    // sprite (não do valor bruto data.size) — sprites largos/não
-    // quadrados (como a arte real do Rastejante, 724×505) tinham um
-    // raio maior que a área visível de fato, causando dano "do nada".
-    const apparentWidth = this.sprite.texture.width * this.sprite.scale.x;
-    const apparentHeight = this.sprite.texture.height * this.sprite.scale.y;
-    this.collisionRadius = Math.max(6, Math.min(apparentWidth, apparentHeight) * 0.4);
+  // Caminho COM arte definitiva (Rastejante por enquanto): animação de
+  // frame real (idle/walk/attack/hit/death), igual ao jogador.
+  _buildAnimatedSprite(renderer) {
+    const PIXI = window.PIXI;
+    this.sprite = new PIXI.Sprite();
+    this.sprite.anchor.set(0.5, 0.72);
+
+    const animations = {};
+    const counts = { idle: 8, walk: 8, attack: 8, hit: 4, death: 8 };
+    const fps = { idle: 6, walk: 10, attack: 12, hit: 10, death: 8 };
+    const loop = { idle: true, walk: true, attack: false, hit: false, death: false };
+    for (const name of Object.keys(counts)) {
+      const frames = [];
+      for (let i = 0; i < counts[name]; i++) {
+        const tex = renderer.getTexture('enemy_anim', `${this.data.id}_${name}_${i}`);
+        if (tex) frames.push(tex);
+      }
+      if (frames.length > 0) animations[name] = { frames, fps: fps[name], loop: loop[name] };
+    }
+    this.animator = new FrameAnimator(this.sprite, animations);
+    this.animator.play('idle');
+
+    // A arte real já vem com dimensões próprias — escala pra bater
+    // aproximadamente com data.size, igual ao caminho estático.
+    const scale = Math.min(1, (this.data.size ?? 24) * 2 / Math.max(this.sprite.texture.width, this.sprite.texture.height || 1));
+    this.sprite.scale.set(scale);
+    this.hasRealAnimation = true;
   }
 
   // ---- Ponto de entrada único de update — despacha pro comportamento certo ----
@@ -87,23 +127,43 @@ export class Enemy {
       // sofre o conhecimento físico que já estava rolando.
       this._applyKnockback(dt);
       this.sprite.position.set(this.x, this.y);
-      this.secondaryMotion.update(dt);
+      this._updateVisuals(dt, false);
       return;
     }
 
     if (Date.now() < this.stunnedUntilMs) {
       this._applyKnockbackOnly(dt);
-      this.secondaryMotion.update(dt);
+      this._updateVisuals(dt, false);
       return;
     }
 
     const speedFromStatus = this.statusReceiver.getSpeedMultiplier();
     const behaviorFn = BEHAVIORS[this.data.behavior] || BEHAVIORS.chase;
+    const xBefore = this.x, yBefore = this.y;
     behaviorFn(this, dt * speedFromStatus, ctx);
+    const moved = Math.hypot(this.x - xBefore, this.y - yBefore) > 0.01;
 
     this._applyKnockback(dt);
     this.sprite.position.set(this.x, this.y);
-    this.secondaryMotion.update(dt);
+    this._updateVisuals(dt, moved);
+  }
+
+  // Alterna entre animação de frame real (Rastejante, por enquanto) e
+  // movimento procedural (respiração/squash) pros outros 16 tipos —
+  // pra quem tem arte definitiva, toca idle/walk de verdade, respeitando
+  // uma janela de "atacando"/"tomando dano" que tem prioridade (ver
+  // playAttackAnimation/takeDamage).
+  _updateVisuals(dt, isMoving) {
+    if (!this.hasRealAnimation) {
+      this.secondaryMotion.update(dt);
+      return;
+    }
+    if (Date.now() < (this._hitAnimUntilMs ?? 0)) {
+      this.animator.update(dt);
+      return;
+    }
+    this.animator.play(isMoving ? 'walk' : 'idle');
+    this.animator.update(dt);
   }
 
   // Feedback visual dos status effects — sobrepõe a cor normal do
@@ -121,7 +181,7 @@ export class Enemy {
     } else if (this.statusReceiver.hasStatus('bleed')) {
       this.sprite.tint = 0x8a2b3d;
     } else {
-      this.sprite.tint = this.data.color ?? 0xffffff;
+      this.sprite.tint = this.hasRealAnimation ? 0xffffff : (this.data.color ?? 0xffffff);
     }
   }
 
@@ -179,7 +239,12 @@ export class Enemy {
     }
 
     this.health = Math.max(0, this.health - finalDamage);
-    this.secondaryMotion.playHitSquash();
+    if (this.hasRealAnimation && this.animator.animations.hit) {
+      this.animator.play('hit');
+      this._hitAnimUntilMs = Date.now() + (this.animator.animations.hit.frames.length / this.animator.animations.hit.fps) * 1000;
+    } else {
+      this.secondaryMotion.playHitSquash();
+    }
     this.stunnedUntilMs = Date.now() + 120; // flinch curto, não trava o combate
     this._flashUntilMs = Date.now() + 50; // ~3 frames a 60fps — flash branco de impacto (GDD 2.3)
 

@@ -37,7 +37,12 @@ import { RELICS } from '../data/relics.js';
 import { BIOMES } from '../data/biomes.js';
 import { ATLAS_FRAMES } from '../data/atlasframes.js';
 import { MINIBOSSES } from '../data/minibosses.js';
-import { PLAYER_ATLAS_B64, ENEMY_ATLAS_B64, BOSS_ATLAS_B64, DECORATIONS_B64, PICKUP_GOLD_B64, PICKUP_XP_GEM_B64, GRUNT_REAL_B64 } from '../data/sprites.js';
+import { PLAYER_ATLAS_B64, ENEMY_ATLAS_B64, BOSS_ATLAS_B64, DECORATIONS_B64, PICKUP_GOLD_B64, PICKUP_XP_GEM_B64 } from '../data/sprites.js';
+import { GRUNT_ANIM_FRAMES } from '../data/grunt_animations.js';
+import { RUNNER_ANIM_FRAMES } from '../data/runner_animations.js';
+import { TANK_ANIM_FRAMES } from '../data/tank_animations.js';
+import { SHOOTER_ANIM_FRAMES } from '../data/shooter_animations.js';
+import { SPLITTER_ANIM_FRAMES } from '../data/splitter_animations.js';
 
 function loadGameData() {
   // Não é mais async/fetch de propósito: dados embutidos como módulos JS
@@ -164,7 +169,14 @@ class App {
     await this.renderer.loadSingleTexture('pickup_xp_gem', PICKUP_XP_GEM_B64);
     // Arte definitiva do Rastejante — substitui só esse frame dentro do
     // atlas de inimigos, os outros 16 tipos continuam vindo da folha.
-    await this.renderer.addFrameToAtlas('enemy', 'grunt', GRUNT_REAL_B64);
+    // Rastejante: 36 frames de animação real (idle/walk/attack/hit/death)
+    // substituem o sprite único — o único inimigo dos 17 com animação
+    // de frame de verdade até agora.
+    await this.renderer.addFramesToAtlas('enemy_anim', GRUNT_ANIM_FRAMES);
+    await this.renderer.addFramesToAtlas('enemy_anim', RUNNER_ANIM_FRAMES);
+    await this.renderer.addFramesToAtlas('enemy_anim', TANK_ANIM_FRAMES);
+    await this.renderer.addFramesToAtlas('enemy_anim', SHOOTER_ANIM_FRAMES);
+    await this.renderer.addFramesToAtlas('enemy_anim', SPLITTER_ANIM_FRAMES);
   }
 
   _applySettingsToAudio() {
